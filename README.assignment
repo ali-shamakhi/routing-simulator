@@ -1,0 +1,100 @@
+INTRODUCTION
+------------
+
+The purpose of this assignment is to reinforce students' understanding of
+distance-vector and link-state routing.  We provide you with a routing
+simulator capable of storing topologies and forwarding packets, and you
+write the logic that runs on each node to build routing tables.
+
+The purpose of writing the code in a simulator rather than writing an
+actual routing daemon is to avoid as much overhead as possible.  This
+assignment should help students understand two routing algorithms; it does
+not aim to teach or require system development techniques.  The choice of
+Java as a platform is in keeping with this goal -- students can write the
+same algorithms without worrying as much about writing and debugging
+detail code.
+
+
+THE SIMULATOR
+-------------
+
+The code provided for this assignment is a discrete-event network
+simulator.  The simulator maintains a topology of nodes and links and
+simulates events such as link state changes and packet delivery.  Also
+provided is a graphical front-end to display the network topology, the
+routing table for each node, and buttons for stepping through and ending
+the simulation.
+
+Throughout most of the simulator, nodes are handled by numeric address.
+Numeric addresses are assigned in the order that node definitions appear
+in the .net file, beginning with 0.
+
+Real packet timings are simulated, sort of: packets take non-zero times
+to transmit, depending on the latency and bandwidth of links specified in
+the topology file and the actual size (in characters) of the packet sent.
+
+Students are expected to write routing code to run on each virtual node.
+The simulator provides each node with a list of neighbors and the ability
+to send packets to each neighbor.  The node itself (with code written by
+students) must determine which packets are sent and what to do with
+packets that are received.  Nodes must also react to changes in the state
+of links to their neighbors.
+
+Students may poke around in the workings of the simulator itself, but this
+should not be necessary in the course of implementing distance-vector or
+link-state routing.  Please do not change any existing files other than
+Node.java for any code that you hand in.  You may add new source files as
+necessary.
+
+
+BUILDING AND RUNNING THE SIMULATOR
+----------------------------------
+
+Type 'javac *.java' to build the simulator.  Typing './build' should work
+on any system that has bash installed and will perform rebuilds somewhat
+faster.
+
+Type 'java Network <file.net>' to run the simulator.
+
+
+DETAILS
+-------
+
+Students must take the file Node.java and fill in functionality in the
+following places:
+
+  Node.init(): what the node does at "boot time."  When init() is called,
+  the node will have meaningful values in its interfaces table but nothing
+  in its routing table.  init() should fill in whatever values it can in
+  the routing table and send any necessary messages to neighboring nodes.
+
+  Node.interfaceDown(Link lnk): what the node does when its connection
+  to the given link (interface) goes away.
+
+  Node.interfaceUp(Link lnk): what the node does when its connection to the
+  given link (interface) comes back.
+
+  Node.receivePacket(int source, String pkt): what the node does when it
+  gets the given packet from the given source.
+
+The following is the interface that students are expected to use (note
+that Node inherits these fields from NodeBase):
+
+  Node.sendPacket(int destination, String pkt): send the given packet to
+  the given destination.
+
+  Node.routingTable: the node's current routing table.  Each route
+  contains the destination address, the next hop (which must be directly
+  connected) and the cost (typically the number of hops).  The useful
+  functions in the RoutingTable class are add, remove, enumerate, findRoute,
+  and findRouteByNextHop.
+
+  Node.interfaces: the node's immediate neighbors.  Each interface
+  contains the destination address, an indication of whether or not the
+  interface is up, and the cost of sending a packet through the interface.
+  The useful functions in the Interface class are isUp, getDest, and
+  getCost.
+
+Students should make up their own packet format to represent whatever data
+they need to send as a character string.  Code to parse the packets should
+probably go in receivePacket.

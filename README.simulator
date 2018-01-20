@@ -1,0 +1,35 @@
+This file aims to provide a design overview of the simulator.  The
+information here is not necessary knowledge for adding distance-vector or
+link-state routing to the simulator.
+
+The simulator provides a discrete-event simulation of link state changes
+and packet deliveries in the context of a simple network including nodes
+and bidirectional links.  The EventQueue class provides a simple queue
+(implemented using a heap) to store events.  The Event class provides an
+abstraction for storing events.  Its derived classes, LinkEvent and
+PacketEvent, encapsulate actual events.
+
+The simulator reads a topology and a list of events from a .net file.  It
+initializes nodes and links corresponding to the contents of the .net file
+and then calls init() for each node.  It schedules packet deliveries and
+calls receivePacket() for a node whenever the node receives a packet.  It
+also schedules link-up and link-down events, as specified in the .net
+file, and calls interfaceUp() and interfaceDown() for a node whenever a
+node loses or gains a neighbor.
+
+Time in the simulator advances in a discrete-event manner: it starts at
+zero and jumps to the next available event (i.e., the event in the
+EventQueue with the earliest trigger time), repeatedly, until no events
+remain.  The progress of time is not necessarily linear or correlated to
+real time in any way.
+
+All times are measured in seconds.  Speeds are specified in bits/second.
+Latencies are specified in seconds.  Packet sizes are handled in bytes; it
+is assumed that each character occupies 8 bits.
+
+No queueing or congestion control is performed.  Packet timings are
+determined only by their size and the bandwidth and latency of the link
+traversed; the presence of other packets is ignored.
+
+Please see the javadoc documentation for a detailed view of each class's
+public interface.
